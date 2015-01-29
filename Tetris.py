@@ -1,34 +1,41 @@
-import sys
+# v0.0.2
+# author Konrad Schultz
+
 import pygame
+from pygame.locals import *
 
 
 def pause_menu():
     pausemenu = pygame.image.load("img/pausemenu.png")
-    screen.blit()
+    pausemenurect = pausemenu.get_rect()
+    screen.blit(pausemenu, pausemenurect)
+    pygame.display.flip()
     while True:
-
-    return
-
-
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                exit()
+            if event.type == KEYDOWN and event.key == K_SPACE:
+                return
+            elif event.type == KEYDOWN and event.key == K_q:
+                exit()
+        clock.tick(40)
+        pygame.display.set_caption("fps: "+str(clock.get_fps()))
 
 pygame.init()
 size = width, height = 1045, 740
-speed = [2, 2]
-white = 255, 255, 255
 screen = pygame.display.set_mode(size)
 background = pygame.image.load("img/Board.png")
-ball = pygame.image.load("cat.png")
-ballrect = ball.get_rect()
 backgroundrect = background.get_rect()
+clock = pygame.time.Clock()
 
 while True:
     for event in pygame.event.get():
-        if pygame.key.get_pressed()[pygame.K_q] or pygame.key.get_pressed()[pygame.K_SPACE]:
+        if event.type == QUIT:
+            exit()
+        if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_q):
             pause_menu()
-        ballrect = ballrect.move(speed)
-        if ballrect.left < 0 or ballrect.right > width:
-            speed[0] = -speed[0]
-        if ballrect.top < 0 or ballrect.bottom > height:
-            speed[1] = -speed[1]
-        screen.blit(ball, ballrect)
+
+        screen.blit(background, backgroundrect)
         pygame.display.flip()
+    clock.tick(40)
+    pygame.display.set_caption("fps: "+str(clock.get_fps()))
