@@ -71,7 +71,7 @@ def initialize_border():
         Border.add(grey2)
     for x in range(10):
         grey = Block("g")
-        grey.rect = grey.rect.move(335+20*x, 20*25)
+        grey.rect = grey.rect.move(355+20*x, 20*25)
         Border.add(grey)
 
 # screen surface
