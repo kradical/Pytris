@@ -3,6 +3,7 @@
 
 import pygame
 from pygame.locals import *
+import random
 
 
 class Blocks(pygame.sprite.Group):
@@ -11,42 +12,79 @@ class Blocks(pygame.sprite.Group):
         if tetranimo is not None:
             if tetranimo == 'I':
                 for x in range(4):
-                    cy = Block("I", 415+20*x, 100)
-                    self.add(cy)
+                    self.add(Block(tetranimo, 420+20*x, 60))
             if tetranimo == 'O':
-                print("Yellow")
+                for x in range(2):
+                    self.add(Block(tetranimo, 440+20*x, 60))
+                    self.add(Block(tetranimo, 440+20*x, 80))
             if tetranimo == 'T':
-                print("Purple")
+                for x in range(2):
+                    self.add(Block(tetranimo, 440+20*x, 60))
+                    self.add(Block(tetranimo, 440+20*x, 80))
             if tetranimo == 'S':
-                print("Green")
+                for x in range(2):
+                        self.add(Block(tetranimo, 440+20*x, 60))
+                        self.add(Block(tetranimo, 440+20*x, 80))
             if tetranimo == 'Z':
-                print("Red")
+                for x in range(2):
+                    self.add(Block(tetranimo, 440+20*x, 60))
+                    self.add(Block(tetranimo, 440+20*x, 80))
             if tetranimo == 'J':
-                print("Blue")
+                for x in range(2):
+                    self.add(Block(tetranimo, 440+20*x, 60))
+                    self.add(Block(tetranimo, 440+20*x, 80))
             if tetranimo == 'L':
-                print("Orange")
+                for x in range(2):
+                    self.add(Block(tetranimo, 440+20*x, 60))
+                    self.add(Block(tetranimo, 440+20*x, 80))
+# TODO
 
-    def move_left(self):
+    def move_left(self, passive, play_field):
+        collide = True
         for sprite in iter(self):
             sprite.rect = sprite.rect.move(-20, 0)
-        if pygame.sprite.groupcollide(self, Border, False, False):
+            if not pygame.sprite.collide_rect(sprite, play_field):
+                collide = False
+        if not collide:
             for sprite2 in iter(self):
                 sprite2.rect = sprite2.rect.move(20, 0)
 
-    def move_right(self):
+    def move_right(self, passive, play_field):
+        collide = True
         for sprite in iter(self):
             sprite.rect = sprite.rect.move(20, 0)
-        if pygame.sprite.groupcollide(self, Border, False, False):
+            if not pygame.sprite.collide_rect(sprite, play_field):
+                collide = False
+        if not collide:
             for sprite2 in iter(self):
                 sprite2.rect = sprite2.rect.move(-20, 0)
 
-    def move_down(self):
+    def move_down(self, block_list, passive, play_field):
+        collide = False
         for sprite in iter(self):
-            sprite.rect = sprite.rect.move(0, 20)
-        if pygame.sprite.groupcollide(self, Border, False, False):
+            sprite.rect = sprite.rect.move(0, 5)
+            if not pygame.sprite.collide_rect(sprite, play_field):
+                collide = True
+            elif pygame.sprite.groupcollide(self, passive, False, False):
+                collide = True
+        if collide:
+            top_row = PlayingField(360, 80, 200, 20)
             for sprite2 in iter(self):
-                sprite2.rect = sprite2.rect.move(0, -20)
+                sprite2.rect = sprite2.rect.move(0, -5)
+                self.remove(sprite2)
+                passive.add(sprite2)
+                if pygame.sprite.collide_rect(sprite2, top_row):
+                    global dead
+                    dead = True
+            if not block_list:
+                block_list = sequence_generator()
+            if not bool(self):
+                self.add(Blocks(block_list.pop()))
+        return collide
 
+    def move_all_down(self, block_list, passive, play_field):
+        while not self.move_down(block_list, passive, play_field):
+            continue
 
 
 class Block(pygame.sprite.Sprite):
@@ -59,11 +97,18 @@ class Block(pygame.sprite.Sprite):
                 self.rect = self.rect.move(xpos, ypos)
 
 
-def pause_menu():
+# Makes a sprite of the rectangle that would be passed into pygame.Rect
+class PlayingField(pygame.sprite.Sprite):
+    def __init__(self, left, top, w, h):
+        pygame.sprite.Sprite.__init__(self)
+        self.rect = pygame.Rect(left, top, w, h)
+
+
+def pause_menu(screen1):
     pygame.mixer.music.set_volume(0.15)
     pausemenu = pygame.image.load("img/pausemenu.png")
     pausemenurect = pausemenu.get_rect()
-    screen.blit(pausemenu, pausemenurect)
+    screen1.blit(pausemenu, pausemenurect)
     pygame.display.flip()
     while True:
         for event1 in pygame.event.get():
@@ -73,55 +118,91 @@ def pause_menu():
                 return
             elif event1.type == KEYDOWN and event1.key == K_q:
                 exit()
-        clock.tick(60)
-        pygame.display.set_caption("fps: "+str(clock.get_fps()))
 
 
-def initialize_border():
-    for x in range(4, 26):
-        grey = Block("g")
-        grey2 = Block("g")
-        grey.rect = grey.rect.move(335, 20*x)
-        grey2.rect = grey2.rect.move(555, 20*x)
-        Border.add(grey)
-        Border.add(grey2)
-    for x in range(10):
-        grey = Block("g")
-        grey.rect = grey.rect.move(355+20*x, 20*25)
-        Border.add(grey)
+def sequence_generator():
+    random_blocks = ['I', 'O', 'J', 'Z', 'S', 'T', 'L']
+    random.shuffle(random_blocks)
+    return random_blocks
 
-# screen surface
-pygame.init()
-size = width, height = 950, 650
-screen = pygame.display.set_mode(size)
-# fps counter
-clock = pygame.time.Clock()
-# music
-pygame.mixer.music.load("sound/theme2.mp3")
-pygame.mixer.music.play(10)
-pygame.mixer.music.set_volume(0.5)
-# border
-Border = Blocks()
-initialize_border()
+# global game state, game over or not
+dead = False
 
-Active = Blocks("I")
 
-while True:
-    for event in pygame.event.get():
-        screen.fill([200, 200, 100])
-        Border.draw(screen)
-        Active.draw(screen)
+def main():
+    # screen surface
+    pygame.init()
+    size = 920, 640
+    screen = pygame.display.set_mode(size)
+    # fps counter
+    clock = pygame.time.Clock()
+    # music
+    pygame.mixer.music.load("sound/theme2.mp3")
+    pygame.mixer.music.play(10)
+    pygame.mixer.music.set_volume(0)
+    # board
+    board = pygame.image.load("img/board.png")
+    board_rect = board.get_rect()
+    play_field = PlayingField(360, 0, 200, 485)
+
+    passive = Blocks()
+    block_list = sequence_generator()
+    active = Blocks(block_list.pop())
+    counter = 0
+    while not dead:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                exit()
+            if event.type == KEYDOWN and (event.key == K_q):
+                pause_menu(screen)
+                pygame.mixer.music.set_volume(0.5)
+            if event.type == KEYDOWN and (event.key == K_LEFT):
+                active.move_left(passive, play_field)
+            if event.type == KEYDOWN and (event.key == K_RIGHT):
+                active.move_right(passive, play_field)
+            if event.type == KEYDOWN and (event.key == K_DOWN):
+                active.move_down(block_list, passive, play_field)
+            if event.type == KEYDOWN and (event.key == K_SPACE):
+                active.move_all_down(block_list, passive, play_field)
+
+        counter += 1
+        clock.tick(15)
+        if counter % 7 == 0:
+            active.move_down(block_list, passive, play_field)
+        screen.blit(board, board_rect)
+        active.draw(screen)
+        passive.draw(screen)
         pygame.display.flip()
-        if event.type == QUIT:
-            exit()
-        if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_q):
-            pause_menu()
-            pygame.mixer.music.set_volume(0.5)
-        if event.type == KEYDOWN and (event.key == K_LEFT):
-            Active.move_left()
-        if event.type == KEYDOWN and (event.key == K_RIGHT):
-            Active.move_right()
-        if event.type == KEYDOWN and (event.key == K_DOWN):
-            Active.move_down()
-    clock.tick(60)
-    pygame.display.set_caption("fps: "+str(clock.get_fps()))
+    while dead:
+        print("LELELELE YOU DED")
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
