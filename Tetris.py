@@ -11,7 +11,7 @@ class Blocks(pygame.sprite.Group):
         if tetranimo is not None:
             if tetranimo == 'I':
                 for x in range(4):
-                    cy = Block("I", 415+20*x, 80)
+                    cy = Block("I", 415+20*x, 100)
                     self.add(cy)
             if tetranimo == 'O':
                 print("Yellow")
@@ -27,10 +27,26 @@ class Blocks(pygame.sprite.Group):
                 print("Orange")
 
     def move_left(self):
-        pass
+        for sprite in iter(self):
+            sprite.rect = sprite.rect.move(-20, 0)
+        if pygame.sprite.groupcollide(self, Border, False, False):
+            for sprite2 in iter(self):
+                sprite2.rect = sprite2.rect.move(20, 0)
 
     def move_right(self):
-        pass
+        for sprite in iter(self):
+            sprite.rect = sprite.rect.move(20, 0)
+        if pygame.sprite.groupcollide(self, Border, False, False):
+            for sprite2 in iter(self):
+                sprite2.rect = sprite2.rect.move(-20, 0)
+
+    def move_down(self):
+        for sprite in iter(self):
+            sprite.rect = sprite.rect.move(0, 20)
+        if pygame.sprite.groupcollide(self, Border, False, False):
+            for sprite2 in iter(self):
+                sprite2.rect = sprite2.rect.move(0, -20)
+
 
 
 class Block(pygame.sprite.Sprite):
@@ -105,5 +121,7 @@ while True:
             Active.move_left()
         if event.type == KEYDOWN and (event.key == K_RIGHT):
             Active.move_right()
+        if event.type == KEYDOWN and (event.key == K_DOWN):
+            Active.move_down()
     clock.tick(60)
     pygame.display.set_caption("fps: "+str(clock.get_fps()))
