@@ -1,0 +1,226 @@
+Overview
+
+In computer science, trees are a very interesting data structure with many different algorithmic applications. This problem focuses specifically on Binary Trees.
+
+A binary tree is a tree structure in which each node has at most two child nodes (often referred to as a left and right).[1]
+
+There are several different ways to traverse an existing tree, but in this problem we involve 3 specific traversals.
+
+In-order
+Post-order
+Breadth-first
+In this problem, you will be provided a binary tree as input. The tree will be represented by in-order and post-order traversals.
+
+The task is to build up a binary tree solely from the given traversals and output a breadth-first traversal.
+
+The input tree can be invalid, meaning that it does not represent a binary tree.
+You have to make sure to handle invalid input and output InvalidInput if you determine the input to be invalid.
+An example of invalid input could be something like this 1-2-3-4-5-6 or this is not a valid binary tree input.
+
+See the input and output for more examples of valid and invalid inputs.
+
+Clarifications
+
+Tree node values are unique, so don’t worry about ambiguity caused by duplicate values
+If the tree or input is invalid, the result should be the string InvalidInput
+The input trees are not balanced
+The input trees have no node value rules
+These are binary trees, so remember, at most two children per node
+Input description/format
+
+A string consisting of two lines. 
+Each line is a comma separated list of numbers, representing the in-order and post-order traversals. 
+The numbers themselves are the node values.
+
+Output description/format
+
+A string representing the breadth-first-order traversal of the tree, where node values are comma separated to represent the tree nodes.
+
+Example input
+
+4,2,7,5,8,1,3,9,6,11,10
+4,7,8,5,2,9,11,10,6,3,1
+Example output
+
+1,2,3,4,5,6,7,8,9,10,11
+###
+
+You are faced with a stepping puzzle. You know the word needed to get from one side to the other safely, but you need to find the path.
+
+Using a given word and 2D grid of letters, find a path from the top left to the bottom right of the grid. This path must only use adjacent spaces (no diagonals) and it can't use the same space twice. After you have found the path, change all other letters in the grid to periods (.) to let the rest of your friends cross safely.
+
+Input description/format
+
+The input will be the word to follow followed by a grid of characters.
+
+Output description/format
+
+The output will be the grid of characters with only the correct path remaining, each other letter in the grid will be replaced with a period (.)
+
+Example input
+
+SNICKERDOODLE
+SNICKE
+NRCRDO
+IEKODS
+CRDOLE
+Example output
+
+SNI...
+..C...
+.EKOD.
+.RDOLE
+###
+
+To use the words of the late Mitch Hedberg: “an escalator can never break, it can only become stairs.”
+
+You are at the 0th floor of a poorly designed building and need to get to a given floor for an interview. You need to find the path that will allow you to get to your interview in the least amount of time possible. You have in your possession a list of all escalators in this building and the direction in which they are running. At any given time, you can choose to stop any escalator, turn it into stairs, and walk up or down these stairs freely. 
+Using an escalator has a fixed cost in terms of time. The cost of walking up stairs is equal to the number of stories you are walking up multiplied by your walking speed (S * abs(start_floor – end_floor)).
+
+Clarifications
+
+You can assume that the building contains an infinite number of floors.
+If two paths took the same time, we prefer the path that uses the fewest escalators.
+If two escalators were equivalent, we prefer the escalator that has the smallest ID.
+If stopping or not stopping an escalator would result in the exact same time consumption, we prefer not stopping it.
+Input description/format
+
+One line containing the following values (all integers separated by a single white space):
+
+T: The floor at which your interview is taking place (your target floor) (> 0)
+E: The time it takes to take one escalator (= 0)
+S: The speed at which you can walk up/down stairs (= 0)
+N: The number of escalators in the building (= 0)
+Followed by n lines of the following format, describing the directed escalators of the building (meaning you can only move from the start floor to the end floor and not vice versa, unless you stop the escalator) (all integers = 0, all separated by a single white space):
+
+The ID of the escalator (a sequential number that goes from 0 to N-1)
+The starting floor of the escalator
+The end floor of the escalator (different from the starting floor)
+Output description/format
+
+If there is no path to get to your interview, output the string Invalid.
+
+If there is a solution, print the following three lines:
+
+The string STOPPED: followed by a space and (white space separated) escalator IDs that are meant to be stopped (sorted from smallest to largest), or “None” if no escalator was stopped.
+The string TIME: followed by a space and the time it will take you to get to the interview.
+The string PATH: followed by (white space separated) escalator ID’s in the order that they are visited.
+Example input
+
+55 5 1 5
+0 0 5
+1 5 56
+2 5 56
+3 57 55
+4 56 57
+Example output
+
+STOPPED: 3 4
+TIME: 13
+PATH: 0 1 4 3
+###
+
+The Windows search charm has to provide quick responses to users’ searches for words in their documents. In order to do this it matches the text entered in the search box to every text token on the machine. If the entered text completely matches a token on the machine or even just a the prefix of a token on the machine, it is returned as a result.
+
+Users will input text that they are expecting to find in the document they are searching for. Your job is to find that text and return it back to them. Write a program that is able to provide the user with basic information about whether or not their search term appears in a document and how many times it appears.
+
+Technical details
+
+A token is a complete word with a space or punctuation at either end. The full specification for breaking text into tokens can be found here.
+Input Text	Tokens
+This “isn’t” an e-mail.	
+This
+
+isn
+
+t
+
+an
+
+e
+
+mail
+
+User search inputs will be a single text token that doesn’t contain punctuation or spaces.
+Matching is not case sensitive (Users don’t know the difference between John and john).
+Input description/format
+
+The input will be a single token, followed by a newline. After that, the document that you are to search will start.
+
+Output description/format
+
+Your output should take the format: AnswerToA;AnswerToB;AnswerToC, where a-c are defined below.
+
+Find the number of times the complete token appears in that document.
+Find the total number of tokens that have the token from part A as a prefix.
+The complete token from the first match found for part B.
+Example input
+
+myth
+
+Greek mythology is the body of myths and teachings that belong to the ancient Greeks, concerning their gods and heroes, the nature of the world, and the origins and significance of their own cult and ritual practices. It was a part of the religion in ancient Greece. Modern scholars refer to and study the myths in an attempt to throw light on the religious and political institutions of Ancient Greece and its civilization, and to gain understanding of the nature of myth itself.
+Example output
+
+1;4;mythology
+###
+
+A Palindrome phrase is a string starting at the beginning of a word and ending at the end of a word that contains the same alphanumeric characters both from left to right and right to left. Given lines of text, find the largest palindrome phrase in each line.
+
+Clarifications
+
+An alphanumeric character is a character that is a number or a letter (punctuation and white space do not count).
+For comparing letters, case should be ignored (for example, “Race Car” would be considered a palindrome phrase).
+The beginning of a word is an alphanumeric character that is: 
+preceded by a non-alphanumeric character, or
+is the first character in the line.
+The end of a word is an alphanumeric character that is: 
+followed by a non-alphanumeric character, or
+is the last character in the line.
+The length of the palindrome phrase is measured by the count of the alphanumeric characters it contains (the ignored punctuation, whitespace, etc. do not count toward its length).
+Input description/format
+
+Multiple lines of text, each potentially containing a palindrome phrase.
+
+Output description/format
+
+One line for each line of input. Each line should be the substring that is the longest palindrome phrase found in the source line (this should be in the original casing and include any ignored characters). If no palindrome phrase is found, leave a blank line.
+
+Example input
+
+Dee saw a seed.
+Unicode has some weird stuff in it. Do not, bob to ? nod.
+Example output
+
+Dee saw a seed
+Do not, bob to ? nod
+###
+
+You are a Network Admin for your company and your day-to-day activity includes interacting with IP addresses and network subnets. Today, you will focus only on the IPv4 protocol. You have a situation for which you need to determine if a given IP address belongs to a subnet. To do so, you must compare the candidate IP address with the range of the subnet. Consider an example subnet that begins at 10.0.0.1 and ends at 11.199.88.254. For this subnet, 10.43.59.96 is within range, while 111.19.12.154 is outside of the range. Note that your input may also contain invalid IP addresses such as 12500.58.18. Any IP address that is incorrectly formatted, is less than 0.0.0.0, or is greater than 255.255.255.255 is an invalid IP address.
+
+In summary, your task is to determine whether an IP address is within range, out side of range, or invalid.
+
+Input description/format
+
+Each line of the input will contain 3 IP Addresses, separated by spaces:
+
+The first IP address represents the first valid IP address of the subnet.
+The second IP address represents the 
+last valid IP address of the subnet.
+The 3rd IP address is the address to validate.
+Output description/format
+
+For each line of input, output the result in one of the following 3 ways (case sensitive):
+
+InRange
+InValid
+OutRange
+Example input
+
+10.0.0.1 11.199.88.254 1000.43.59.96
+10.0.0.1 11.199.88.254 10.43.59.96
+10.0.0.1 11.199.88.254 111.19.12.154
+Example output
+
+InValid
+InRange
+OutRange

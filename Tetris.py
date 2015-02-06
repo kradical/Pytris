@@ -18,44 +18,52 @@ class Blocks(pygame.sprite.Group):
                     self.add(Block(tetranimo, 440+20*x, 60))
                     self.add(Block(tetranimo, 440+20*x, 80))
             if tetranimo == 'T':
-                for x in range(2):
-                    self.add(Block(tetranimo, 440+20*x, 60))
-                    self.add(Block(tetranimo, 440+20*x, 80))
+                self.add(Block(tetranimo, 440, 60))
+                for x in range(3):
+                    self.add(Block(tetranimo, 420+20*x, 80))
             if tetranimo == 'S':
                 for x in range(2):
                         self.add(Block(tetranimo, 440+20*x, 60))
-                        self.add(Block(tetranimo, 440+20*x, 80))
+                        self.add(Block(tetranimo, 420+20*x, 80))
             if tetranimo == 'Z':
                 for x in range(2):
-                    self.add(Block(tetranimo, 440+20*x, 60))
+                    self.add(Block(tetranimo, 420+20*x, 60))
                     self.add(Block(tetranimo, 440+20*x, 80))
             if tetranimo == 'J':
-                for x in range(2):
-                    self.add(Block(tetranimo, 440+20*x, 60))
-                    self.add(Block(tetranimo, 440+20*x, 80))
+                self.add(Block(tetranimo, 420, 60))
+                for x in range(3):
+                    self.add(Block(tetranimo, 420+20*x, 80))
             if tetranimo == 'L':
-                for x in range(2):
-                    self.add(Block(tetranimo, 440+20*x, 60))
-                    self.add(Block(tetranimo, 440+20*x, 80))
+                self.add(Block(tetranimo, 460, 60))
+                for x in range(3):
+                    self.add(Block(tetranimo, 420+20*x, 80))
+
+    def check_for_point(self):
+        pass
+
 # TODO
 
     def move_left(self, passive, play_field):
-        collide = True
+        collide = False
         for sprite in iter(self):
             sprite.rect = sprite.rect.move(-20, 0)
             if not pygame.sprite.collide_rect(sprite, play_field):
-                collide = False
-        if not collide:
+                collide = True
+            elif pygame.sprite.groupcollide(self, passive, False, False):
+                collide = True
+        if collide:
             for sprite2 in iter(self):
                 sprite2.rect = sprite2.rect.move(20, 0)
 
     def move_right(self, passive, play_field):
-        collide = True
+        collide = False
         for sprite in iter(self):
             sprite.rect = sprite.rect.move(20, 0)
             if not pygame.sprite.collide_rect(sprite, play_field):
-                collide = False
-        if not collide:
+                collide = True
+            elif pygame.sprite.groupcollide(self, passive, False, False):
+                collide = True
+        if collide:
             for sprite2 in iter(self):
                 sprite2.rect = sprite2.rect.move(-20, 0)
 
@@ -80,6 +88,7 @@ class Blocks(pygame.sprite.Group):
                 block_list = sequence_generator()
             if not bool(self):
                 self.add(Blocks(block_list.pop()))
+            passive.check_for_point()
         return collide
 
     def move_all_down(self, block_list, passive, play_field):
@@ -166,8 +175,8 @@ def main():
                 active.move_all_down(block_list, passive, play_field)
 
         counter += 1
-        clock.tick(15)
-        if counter % 7 == 0:
+        clock.tick(60)
+        if counter % 30 == 0:
             active.move_down(block_list, passive, play_field)
         screen.blit(board, board_rect)
         active.draw(screen)
