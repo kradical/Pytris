@@ -39,8 +39,15 @@ class Blocks(pygame.sprite.Group):
                     self.add(Block(tetranimo, 420+20*x, 80))
 
     def check_for_point(self):
-        check_row = PlayingField(360, 480, 200, 20)
-        num_collisions = len(pygame.sprite.spritecollide(check_row, self, False))
+        rows_removed = False
+        for x in range(20):
+            check_row = PlayingField(360, 480-20*x, 200, 20)
+            num_collisions = pygame.sprite.spritecollide(check_row, self, False)
+            if len(num_collisions) == 10:
+                self.remove(num_collisions)
+                rows_removed = True
+        return rows_removed
+
 
 # TODO
 
@@ -89,7 +96,9 @@ class Blocks(pygame.sprite.Group):
                 block_list = sequence_generator()
             if not bool(self):
                 self.add(Blocks(block_list.pop()))
-            passive.check_for_point()
+            if passive.check_for_point():       #did a row get cleared
+                for sprite in iter(passive):
+                    passive.remove(sprite)
         return collide
 
     def move_all_down(self, block_list, passive, play_field):
@@ -174,10 +183,11 @@ def main():
                 active.move_down(block_list, passive, play_field)
             if event.type == KEYDOWN and (event.key == K_SPACE):
                 active.move_all_down(block_list, passive, play_field)
+                print(active)
 
         counter += 1
         clock.tick(60)
-        if counter % 30 == 0:
+        if counter % 5 == 0:
             active.move_down(block_list, passive, play_field)
         screen.blit(board, board_rect)
         active.draw(screen)
@@ -188,31 +198,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
