@@ -39,7 +39,8 @@ class Blocks(pygame.sprite.Group):
                     self.add(Block(tetranimo, 420+20*x, 80))
 
     def check_for_point(self):
-        pass
+        check_row = PlayingField(360, 480, 200, 20)
+        num_collisions = len(pygame.sprite.spritecollide(check_row, self, False))
 
 # TODO
 
