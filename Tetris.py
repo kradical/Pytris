@@ -9,31 +9,40 @@ import random
 class Blocks(pygame.sprite.Group):
     def __init__(self, tetranimo=None):
         pygame.sprite.Group.__init__(self)
+        self.rotate_state = 0
         if tetranimo is not None:
+            self.type = tetranimo
             if tetranimo == 'I':
+                self.center = [450, 70]
                 for x in range(4):
                     self.add(Block(tetranimo, 420+20*x, 60))
-            if tetranimo == 'O':
+            elif tetranimo == 'O':
+                self.center = [450, 70]
                 for x in range(2):
                     self.add(Block(tetranimo, 440+20*x, 60))
                     self.add(Block(tetranimo, 440+20*x, 80))
-            if tetranimo == 'T':
+            elif tetranimo == 'T':
+                self.center = [440, 80]
                 self.add(Block(tetranimo, 440, 60))
                 for x in range(3):
                     self.add(Block(tetranimo, 420+20*x, 80))
-            if tetranimo == 'S':
+            elif tetranimo == 'S':
+                self.center = [440, 80]
                 for x in range(2):
                         self.add(Block(tetranimo, 440+20*x, 60))
                         self.add(Block(tetranimo, 420+20*x, 80))
-            if tetranimo == 'Z':
+            elif tetranimo == 'Z':
+                self.center = [440, 80]
                 for x in range(2):
                     self.add(Block(tetranimo, 420+20*x, 60))
                     self.add(Block(tetranimo, 440+20*x, 80))
-            if tetranimo == 'J':
+            elif tetranimo == 'J':
+                self.center = [440, 80]
                 self.add(Block(tetranimo, 420, 60))
                 for x in range(3):
                     self.add(Block(tetranimo, 420+20*x, 80))
-            if tetranimo == 'L':
+            elif tetranimo == 'L':
+                self.center = [440, 80]
                 self.add(Block(tetranimo, 460, 60))
                 for x in range(3):
                     self.add(Block(tetranimo, 420+20*x, 80))
@@ -53,8 +62,12 @@ class Blocks(pygame.sprite.Group):
 
         return rows_removed
 
-
-# TODO
+    def rotate_cw(self, passive, play_field):
+        self.rotate_state += 1
+        self.rotate_state %= 4
+        for sprite in iter(self):
+            if self.rotate_state == 1:
+                pass
 
     def move_left(self, passive, play_field):
         collide = False
@@ -175,18 +188,17 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 exit()
-            if event.type == KEYDOWN and (event.key == K_q):
+            elif event.type == KEYDOWN and (event.key == K_q):
                 pause_menu(screen)
                 pygame.mixer.music.set_volume(0.5)
-            if event.type == KEYDOWN and (event.key == K_LEFT):
+            elif event.type == KEYDOWN and (event.key == K_LEFT):
                 active.move_left(passive, play_field)
-            if event.type == KEYDOWN and (event.key == K_RIGHT):
+            elif event.type == KEYDOWN and (event.key == K_RIGHT):
                 active.move_right(passive, play_field)
-            if event.type == KEYDOWN and (event.key == K_DOWN):
+            elif event.type == KEYDOWN and (event.key == K_DOWN):
                 active.move_down(block_list, passive, play_field)
-            if event.type == KEYDOWN and (event.key == K_SPACE):
+            elif event.type == KEYDOWN and (event.key == K_SPACE):
                 active.move_all_down(block_list, passive, play_field)
-                print(active)
 
         counter += 1
         clock.tick(60)
