@@ -39,6 +39,7 @@ class Blocks(pygame.sprite.Group):
                     self.add(Block(tetranimo, 420+20*x, 80))
 
     def check_for_point(self):
+        rows_down = 0
         rows_removed = False
         for x in range(20):
             check_row = PlayingField(360, 480-20*x, 200, 20)
@@ -46,6 +47,10 @@ class Blocks(pygame.sprite.Group):
             if len(num_collisions) == 10:
                 self.remove(num_collisions)
                 rows_removed = True
+                rows_down += 1
+            for sprite in num_collisions:
+                sprite.rect = sprite.rect.move(0, 20*rows_down)
+
         return rows_removed
 
 
@@ -78,7 +83,7 @@ class Blocks(pygame.sprite.Group):
     def move_down(self, block_list, passive, play_field):
         collide = False
         for sprite in iter(self):
-            sprite.rect = sprite.rect.move(0, 5)
+            sprite.rect = sprite.rect.move(0, 20)
             if not pygame.sprite.collide_rect(sprite, play_field):
                 collide = True
             elif pygame.sprite.groupcollide(self, passive, False, False):
@@ -86,7 +91,7 @@ class Blocks(pygame.sprite.Group):
         if collide:
             top_row = PlayingField(360, 80, 200, 20)
             for sprite2 in iter(self):
-                sprite2.rect = sprite2.rect.move(0, -5)
+                sprite2.rect = sprite2.rect.move(0, -20)
                 self.remove(sprite2)
                 passive.add(sprite2)
                 if pygame.sprite.collide_rect(sprite2, top_row):
@@ -96,9 +101,7 @@ class Blocks(pygame.sprite.Group):
                 block_list = sequence_generator()
             if not bool(self):
                 self.add(Blocks(block_list.pop()))
-            if passive.check_for_point():       #did a row get cleared
-                for sprite in iter(passive):
-                    passive.remove(sprite)
+            passive.check_for_point() #did a row get cleared
         return collide
 
     def move_all_down(self, block_list, passive, play_field):
@@ -187,7 +190,7 @@ def main():
 
         counter += 1
         clock.tick(60)
-        if counter % 5 == 0:
+        if counter % 30 == 0:
             active.move_down(block_list, passive, play_field)
         screen.blit(board, board_rect)
         active.draw(screen)
