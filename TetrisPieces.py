@@ -21,7 +21,7 @@ class PlayingField(pygame.sprite.Sprite):
         self.rect = pygame.Rect(left, top, w, h)
 
 
-#any group of blocks
+# any group of blocks
 class Blocks(pygame.sprite.Group):
     def move_down(self, t_game):
         for sprite in iter(self):
@@ -29,6 +29,7 @@ class Blocks(pygame.sprite.Group):
             self.center[1] += 20
         if t_game is not None and self.check_for_collisions(t_game.passive, t_game.play_field):
             self.move_up()
+
 
     def move_up(self):
         for sprite in iter(self):

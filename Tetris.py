@@ -1,6 +1,5 @@
 # v0.0.2
 # author Konrad Schultz
-
 import pygame
 import TetrisPieces
 from pygame.locals import *
@@ -36,7 +35,7 @@ def main():
                 if event.key == K_DOWN:
                     t_game.active.move_down(t_game)
                 if event.key == K_SPACE:
-                    pass  # drop down
+                    t_game.active.drop_down(t_game)
                 if event.key == K_UP:
                     pass  # rotate cw
         if loop_counter % 30 == 0:
