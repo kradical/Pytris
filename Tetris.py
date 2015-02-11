@@ -37,9 +37,12 @@ def main():
                 if event.key == K_SPACE:
                     t_game.active.drop_down(t_game)
                 if event.key == K_UP:
-                    pass  # rotate cw
-        if loop_counter % 30 == 0:
-            t_game.active.move_down(t_game)
+                    t_game.active.rotate_cw()  # rotate cw
+                if event.key == K_v:
+                    t_game.active.rotate_ccw()
+        # if loop_counter % 60 == 0:
+        #    t_game.active.move_down(t_game)
+        #    loop_counter %= 60
         screen.blit(board, board_rect)
         t_game.active.draw(screen)
         t_game.passive.draw(screen)

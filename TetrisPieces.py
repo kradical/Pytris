@@ -12,6 +12,14 @@ class TetrisApp():
         self.active = mBlocks(self.block_list[0][self.block_in_sequence])
         self.play_field = PlayingField(360, 0, 200, 485)
 
+    def new_active(self):
+        self.block_in_sequence += 1
+        self.block_in_sequence %= 7
+        if self.block_in_sequence == 0:
+            self.block_list[0], self.block_list[1] = self.block_list[1], self.block_list[0]
+            random.shuffle(self.block_list[1])
+        self.active = mBlocks(self.block_list[0][self.block_in_sequence])
+
 
 # Makes a sprite of the rectangle that would be passed into pygame.Rect
 # useful for sprite.collide type methods
@@ -26,15 +34,20 @@ class Blocks(pygame.sprite.Group):
     def move_down(self, t_game):
         for sprite in iter(self):
             sprite.rect = sprite.rect.move(0, 20)
-            self.center[1] += 20
+        self.center[1] += 20
         if t_game is not None and self.check_for_collisions(t_game.passive, t_game.play_field):
             self.move_up()
-
+            for sprite in iter(self):
+                self.remove(sprite)
+                t_game.passive.add(sprite)
+            t_game.new_active()
+            return False
+        else:
+            return True
 
     def move_up(self):
         for sprite in iter(self):
             sprite.rect = sprite.rect.move(0, -20)
-            self.center[1] -= 20
 
     def check_for_collisions(self, group_of_blocks, play_field):
         if len(pygame.sprite.spritecollide(play_field, self, False)) != 4:
@@ -101,26 +114,142 @@ class mBlocks(Blocks):
 
     def initialize_center(self):
         if self.type == 'I':
-            return [450, 70]
-        elif self.type == 'O':
-            return [450, 70]
+            return [460, 80]
         else:
-            return [440, 80]
+            return [440, 100]
 
     def move_left(self, t_game=None):
         for sprite in iter(self):
             sprite.rect = sprite.rect.move(-20, 0)
+        self.center[0] -= 20
         if t_game is not None and self.check_for_collisions(t_game.passive, t_game.play_field):
             self.move_right()
 
     def move_right(self, t_game=None):
         for sprite in iter(self):
             sprite.rect = sprite.rect.move(20, 0)
+        self.center[0] += 20
         if t_game is not None and self.check_for_collisions(t_game.passive, t_game.play_field):
             self.move_left()
 
     def drop_down(self, t_game):
-        self.move_down(t_game)
+        while self.move_down(t_game):
+            pass
+
+    def rotate_cw(self):
+        if self.type == 'O':
+            pass
+        elif self.type == 'I':
+            self.rotate_state += 1
+            self.rotate_state %= 4
+            for sprite in iter(self):
+                self.remove(sprite)
+            if self.rotate_state == 0:
+                for x in range(4):
+                    self.add(Block(self.type, self.center[0]-40+20*x, self.center[1]-20))
+            elif self.rotate_state == 1:
+                for x in range(4):
+                    self.add(Block(self.type, self.center[0], self.center[1]-40+20*x))
+            elif self.rotate_state == 2:
+                for x in range(4):
+                    self.add(Block(self.type, self.center[0]-40+20*x, self.center[1]))
+            else:
+                for x in range(4):
+                    self.add(Block(self.type, self.center[0]-20, self.center[1]-40+20*x))
+        else:
+            for sprite in iter(self):
+                # left
+                if sprite.rect.left < self.center[0]:
+                    # bot
+                    if sprite.rect.top > self.center[1]:
+                        sprite.rect.top -= 40
+                    # mid
+                    elif sprite.rect.top == self.center[1]:
+                        sprite.rect.left += 20
+                        sprite.rect.top -= 20
+                    # top
+                    else:
+                        sprite.rect.left += 40
+                # mid
+                elif sprite.rect.left == self.center[0]:
+                    # bot
+                    if sprite.rect.top > self.center[1]:
+                        sprite.rect.top -= 20
+                        sprite.rect.left -= 20
+                    # top
+                    elif sprite.rect.top < self.center[1]:
+                        sprite.rect.top += 20
+                        sprite.rect.left += 20
+                # right
+                else:
+                    # bot
+                    if sprite.rect.top > self.center[1]:
+                        sprite.rect.left -= 40
+                    # mid
+                    elif sprite.rect.top == self.center[1]:
+                        sprite.rect.left -= 20
+                        sprite.rect.top += 20
+                    # top
+                    else:
+                        sprite.rect.top += 40
+
+    def rotate_ccw(self):
+        if self.type == 'O':
+            pass
+        elif self.type == 'I':
+            self.rotate_state += 3
+            self.rotate_state %= 4
+            for sprite in iter(self):
+                self.remove(sprite)
+            if self.rotate_state == 0:
+                for x in range(4):
+                    self.add(Block(self.type, self.center[0]-40+20*x, self.center[1]-20))
+            elif self.rotate_state == 1:
+                for x in range(4):
+                    self.add(Block(self.type, self.center[0], self.center[1]-40+20*x))
+            elif self.rotate_state == 2:
+                for x in range(4):
+                    self.add(Block(self.type, self.center[0]-40+20*x, self.center[1]))
+            else:
+                for x in range(4):
+                    self.add(Block(self.type, self.center[0]-20, self.center[1]-40+20*x))
+        # rotate for all 3x3 bricks
+        else:
+            for sprite in iter(self):
+                # left
+                if sprite.rect.left < self.center[0]:
+                    # bot
+                    if sprite.rect.top > self.center[1]:
+                        sprite.rect.left += 40
+                    # mid
+                    elif sprite.rect.top == self.center[1]:
+                        sprite.rect.left += 20
+                        sprite.rect.top += 20
+                    # top
+                    else:
+                        sprite.rect.top += 40
+                # mid
+                elif sprite.rect.left == self.center[0]:
+                    # bot
+                    if sprite.rect.top > self.center[1]:
+                        sprite.rect.top -= 20
+                        sprite.rect.left += 20
+                    # top
+                    elif sprite.rect.top < self.center[1]:
+                        sprite.rect.top += 20
+                        sprite.rect.left -= 20
+                # right
+                else:
+                    # bot
+                    if sprite.rect.top > self.center[1]:
+                        sprite.rect.top -= 40
+                    # mid
+                    elif sprite.rect.top == self.center[1]:
+                        sprite.rect.left -= 20
+                        sprite.rect.top -= 20
+                    # top
+                    else:
+                        sprite.rect.left -= 40
 
 
 class Block(pygame.sprite.Sprite):
