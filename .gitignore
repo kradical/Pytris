@@ -1,3 +1,7 @@
+*.xml
+*.iml
+*.name
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
