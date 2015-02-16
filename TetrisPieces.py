@@ -2,6 +2,7 @@ import pygame
 import random
 
 
+# global properties of the instance of the application
 class TetrisApp():
     def __init__(self):
         self.block_list = [['I', 'O', 'S', 'Z', 'J', 'L', 'T'], ['I', 'O', 'S', 'Z', 'J', 'L', 'T']]
@@ -9,7 +10,7 @@ class TetrisApp():
         random.shuffle(self.block_list[1])
         self.block_in_sequence = 0
         self.passive = Blocks()
-        self.active = mBlocks(self.block_list[0][self.block_in_sequence])
+        self.active = MovingBlocks(self.block_list[0][self.block_in_sequence])
         self.play_field = PlayingField(360, 0, 200, 485)
 
     def new_active(self):
@@ -18,7 +19,7 @@ class TetrisApp():
         if self.block_in_sequence == 0:
             self.block_list[0], self.block_list[1] = self.block_list[1], self.block_list[0]
             random.shuffle(self.block_list[1])
-        self.active = mBlocks(self.block_list[0][self.block_in_sequence])
+        self.active = MovingBlocks(self.block_list[0][self.block_in_sequence])
 
 
 # Makes a sprite of the rectangle that would be passed into pygame.Rect
@@ -40,6 +41,7 @@ class Blocks(pygame.sprite.Group):
             for sprite in iter(self):
                 self.remove(sprite)
                 t_game.passive.add(sprite)
+            t_game.passive.check_for_point()
             t_game.new_active()
             return False
         else:
@@ -73,7 +75,7 @@ class Blocks(pygame.sprite.Group):
 
 
 #active 4 block unit
-class mBlocks(Blocks):
+class MovingBlocks(Blocks):
     def __init__(self, tetranimo):
         pygame.sprite.Group.__init__(self)
         self.rotate_state = 0

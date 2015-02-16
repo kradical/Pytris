@@ -15,7 +15,7 @@ def main():
     # music
     pygame.mixer.music.load("sound/theme2.mp3")
     pygame.mixer.music.play(10)
-    pygame.mixer.music.set_volume(0)
+    pygame.mixer.music.set_volume(0.1)
     # board
     board = pygame.image.load("img/board.png")
     board_rect = board.get_rect()
@@ -40,9 +40,9 @@ def main():
                     t_game.active.rotate_cw()  # rotate cw
                 if event.key == K_v:
                     t_game.active.rotate_ccw()
-        # if loop_counter % 60 == 0:
-        #    t_game.active.move_down(t_game)
-        #    loop_counter %= 60
+        if loop_counter % 7 == 0:
+            t_game.active.move_down(t_game)
+            loop_counter %= 7
         screen.blit(board, board_rect)
         t_game.active.draw(screen)
         t_game.passive.draw(screen)
