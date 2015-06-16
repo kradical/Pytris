@@ -17,7 +17,7 @@ def main():
     pygame.mixer.music.play(10)
     pygame.mixer.music.set_volume(0.1)
     # board
-    board = pygame.image.load("img/board.png")
+    board = pygame.image.load("img/Board.png")
     board_rect = board.get_rect()
     t_game = TetrisPieces.TetrisApp()
     pygame.key.set_repeat(200, 50)
