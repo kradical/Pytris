@@ -9,4 +9,4 @@
 
 run using Tetris.py with python 3 and pygame installed
 
-$ python3 Tetris.py
+`$ python3 Tetris.py`
