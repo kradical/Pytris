@@ -5,8 +5,6 @@
 )](http://www.pygame.org/news.html)
 ![Build](https://img.shields.io/travis/joyent/node/v0.6.svg)
 
-## dependencies: python3 and pygame
-
 run using Tetris.py with python 3 and pygame installed
 
 `$ python3 Tetris.py`
