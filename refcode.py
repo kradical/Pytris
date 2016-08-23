@@ -1,4 +1,3 @@
-__author__ = 'Mike'
 if not pygame.sprite.collide_rect(sprite, play_field):
                 collide = True
             elif pygame.sprite.groupcollide(self, passive, False, False):
